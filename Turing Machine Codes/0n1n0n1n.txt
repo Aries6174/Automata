@@ -1,0 +1,333 @@
+//Author: Adrian Joel Jaspa
+//Syntax: Lmao Lmao Lmao Lmao Lmao Lmao Lmao Lmao
+//Website: https://turingmachinesimulator.com
+
+//-------CONFIGURATION
+name: Accepts 0^n 1^n 0^n 1^n
+init: q0
+accept: qaccept
+
+//-------DELTA FUNCTION:
+//[current_state],[read_symbol]
+//[new_state],[write_symbol],[>|<|-]
+
+// < = left
+// > = right
+// - = hold
+// use underscore for blank cells
+
+//States and symbols are case-sensitive
+
+//----------------------Start Of Copy-------------------------------//
+
+//Marks X to the first 0 and go to q1
+q0,0
+q1,x,>
+
+//If q0 encounters x, keep going
+q0,x
+q0,x,>
+
+//If q0 encounters y, change state, no change to the right
+q0,y
+q0,y,>
+
+//preparing for palindrome
+q0,_
+q6,_,<
+
+//If q1 encounters 0, repeat, going to the right
+q1,0
+q1,0,>
+
+//Mark Y to the first 1 and go to q2
+q1,1
+q2,y,>
+
+//If q1 encounters y, retain going to the right
+q1,y
+q1,y,>
+
+//If q2 encounters 0, Mark it Y, change state to q3, going right
+q2,0
+q3,y,>
+
+//Repeats if its still 1
+q2,1
+q2,1,>
+
+//If q2 encounters y, retain going right
+q2,y
+q2,y,>
+
+//if q3 encounters 0, retain, going right
+q3,0
+q3,0,>
+
+//if q3 encounters x, retain going right
+q3,x
+q3,x,>
+
+//if q3 encounters 1, Mark it X, move to q4, going right
+q3,1
+q4,x,>
+
+//if q4 encounters 1, retain, going right
+q4,1
+q4,1,>
+
+//if encounters blank go to q5, going to the left
+q4,_
+q5,_,<
+
+//q5 commands
+//go back to the start regardless of symbol
+q5,0
+q5,0,<
+
+q5,1
+q5,1,<
+
+q5,x
+q5,x,<
+
+q5,y
+q5,y,<
+
+//if encounters blank, go back to q0, going right
+q5,_
+q0,_,>
+
+//q6
+q6,x
+q6,x,<
+
+q6,y
+q6,y,<
+
+q6,_
+q7,_,>
+
+//Palindrome
+q7,x
+q8,_,>
+
+q7,y
+q10,_,>
+
+q8,x
+q8,x,>
+
+q8,y
+q8,y,>
+
+q8,_
+q9,_,<
+
+q10,x
+q10,x,>
+
+q10,y
+q10,y,>
+
+q10,_
+q11,_,<
+
+q11,y
+q12,_,<
+
+q9,x
+q12,_,<
+
+//going to the left
+//For X
+q12,x
+q13,_,<
+
+q13,x
+q13,x,<
+
+q13,y
+q13,y,<
+
+//For Y
+q12,y
+q15,_,<
+
+q15,x
+q15,x,<
+
+q15,y
+q15,y,<
+
+//If encounters blanks
+q13,_
+q14,_,>
+
+q14,x
+q7,_,>
+
+q15,_
+q16,_,>
+
+q16,y
+q7,_,>
+
+//Accepting states
+
+q7,_
+qaccept,_,-
+
+q12,_
+qaccept,_,-
+//--------------------------End of Copy-------------------------//
+
+Legend:
+q7 = qstart1
+q8 = qrightx
+q9 = qsearchxL
+q10 = qrighty
+q11 = qsearchyL
+q12 = qstart2
+q13 = qleftx
+q14 = qsearchxR
+q15 = qlefty
+q16 = qsearchyR
+
+//Turning the string into a palindrome X^n Y^n Y^n X^n
+1.) Starting at q0, if it encounters 0, Mark it X, change state to q1, going right
+2.) If q0 encounters X or Y, retain, going right
+3.) If q0, encounters B, go to q6, no change, going right
+4.) If q1 encounters 1, Mark it Y, change state to q2, going right
+5.) If q1 encounters 0 or Y, retain, going right
+6.) If q2 encounters 0, Mark it Y, change state to q3, going right
+7.) If q2 encounters 1 or Y, retain, going right
+8.) If q3 encounters 1, Mark it with X, change state to q4, going right
+9.) If q3 encounters 0 or X, retain, going right
+10.) If q4 encounters B, change state to q5, going left
+11.) If q4 encounters 1, retain, going right
+12.) If q5 encounters B, repeat q0 to q4, going right
+13.) If q5 encounters X, Y, 1, 0, retain, going left
+14.) If q6 encounters B, change state to q7, going right
+15.) If q6 encounters X or Y, retain, going left
+
+//Going right
+16.) If q7 encounters X, Make it B, change state to q8, going right.
+    Else if it encounters Y, Make it B, change state to q10, going right.
+17.) If q8 encounters X or Y, retain going to the right.
+    Else if it encounters B, change state to q9, going left.
+18.) If q9 encounters X, Make it B, change state to q12, going left.
+19.) If q10 encounters X or Y, retain, going right.
+    Else if encounters B, change state to q11, going left.
+20.) If q11 encounters Y, Make it B, change state to q12, going left.
+
+//Going left
+16.) If q12 encounters X, Make it B, change state to q13, going left.
+    Else if it encounters Y, Make it B, change state to q15, going lefy.
+17.) If q13 encounters X or Y, retain going to the left.
+    Else if it encounters B, change state to q14, going right.
+18.) If q14 encounters X, Make it B, change state to q7, going right.
+19.) If q15 encounters X or Y, retain, going left.
+    Else if encounters B, change state to q16, going right.
+20.) If q16 encounters Y, Make it B, change state to q7, going right.
+
+//Accepting State
+21.) If q7 encounters B, accept.
+22.) If q12 encounters B, accept.
+
+State purposes:
+q0 - Marks the first 0 of the string to be X and identifies if all numbers of the string has been marked
+q1 - Marks the first 1 of the string to be Y
+q2 - Marks the 2nd 0 of the string to be Y
+q3 - Marks the 2nd 1 of the string to be Y
+q4 - If it reached the end of the string
+q5 - Goes back to the start of the string and repeats the process again
+q6 - If q0 encounters B, goes back to the start of the string and prepares for palindrome
+q7 - Removes the Input(Either 1 or 0) then goes right. It is also the first accepting state
+q8 - Traverses the entire string up to the right, goes left when encounters Blank
+q9 - Searches specifically for 0 and removes it then goes left, goes to q12
+q10 - Traverses the entire string up to the right, goes left when encounters Blank
+q11 - Searches specifically for 1 and removes it then goes left, goes to q12
+q12 - Removes the Input(Either 1 or 0) then goes left. It is also the 2nd accepting state
+q13 - Traverses the entire string up to the left, goes right when encounters Blank
+q14 - Searches specifically for 0 and removes it then goes right, loops back to q7
+q15 - Traverses the entire string up to the right, goes right when encounters Blank
+q16 - Searches specifically for 1 and removes it then go right, loops back to q7
+
+
+===========================================================================================================================================
+
+
+//Author: Adrian Joel Jaspa
+//Syntax: YEY YEY YEY YEY YEY YEY YEY YEY
+//Website: https://turingmachinesimulator.com
+
+//-------CONFIGURATION
+name: 2's Complement
+init: q0
+accept: qaccept
+
+//-------DELTA FUNCTION:
+//[current_state],[read_symbol]
+//[new_state],[write_symbol],[>|<|-]
+
+// < = left
+// > = right
+// - = hold
+// use underscore for blank cells
+
+//States and symbols are case-sensitive
+
+//----------------------Start Of Copy-------------------------------//
+
+//Traverse to the End of the string
+q0,0
+q0,0,>
+
+q0,1
+q0,1,>
+
+//Starts the compliment
+q0,_
+q1,_,<
+
+q1,0
+q1,0,<
+
+q1,1
+q2,1,<
+
+q2,1
+q2,0,<
+
+q2,0
+q2,1,<
+
+
+q1,_
+qaccept,_,-
+
+q2,_
+qaccept,_,-
+
+
+
+
+//-----------------------End Of Copy--------------------------------//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
